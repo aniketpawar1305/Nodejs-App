@@ -5,26 +5,26 @@
 
 trigger:
 - master
-
 pool:
-  name: Azure Pipelines
-steps:
-- task: NodeTool@0
-  displayName: 'Use Node 12.x'
-  inputs:
-    versionSpec: 12.x
+  vmImage: 'ubuntu-latest'
+stages:
+- stage: Build
+  jobs:
+  - job: InstallNodejs
+    steps:
+    - task: NodeTool@0
+    displayName: 'Use Node 12.x'
 
-- task: Npm@1
-  displayName: 'npm install'
-  inputs:
-    verbose: false
+- stage: Test
+  jobs:
+  - job: NpmInstall
+    steps:
+    - task: Npm@1
+    displayName: 'npm install'
 
-- task: ArchiveFiles@2
-  displayName: 'Archive $(System.DefaultWorkingDirectory)'
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-    includeRootFolder: false
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-
+- stage: Deploy
+  jobs:
+  - job: Deploy
+    steps:
+    - task: ArchiveFiles@2
+    displayName: 'Archive $(System.DefaultWorkingDirectory)'
